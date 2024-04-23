@@ -22,25 +22,23 @@ $uri = $_SERVER['REQUEST_URI'];
 // $endpoint = getEndpoint($_SERVER['QUERY_STRING']);
 $endpoint = getEndpoint();
 
+// $endpoint = substr($uri, strpos($uri, 'src/api/api.php/') + strlen('src/api/api.php'));
+
 
 // var_dump($endpoint);
 switch ($method) {
     case 'GET':
-        if ($endpoint == '/weather') {
-            $myData;
-
+        if (preg_match('/^\/src\/api\/api\.php\/currWeather\/(\w+)$/', $endpoint, $matches)) {
+            $destination = $matches[1];
             http_response_code(200);
-            echo json_encode($weather->getCurlCurrWeatherByName("Poprad"));
-            // echo json_encode($weather->getAverageWeather(49.153495, 20.425547, '2022-01-01', '2022-12-31'));
-
-        } else if ($endpoint == '/src/api/api.php/currWeather'){
-            http_response_code(200);
-            echo json_encode($weather->getCurlCurrWeatherByName("Poprad"));
-        }  else if ($endpoint == '/src/api/api.php/averageWeather'){
-            $latitude = $_GET['latitude'] ?? '49.153495'; // Default values if parameters are not provided
-            $longitude = $_GET['longitude'] ?? '20.425547';
+            echo json_encode($weather->getCurlCurrWeatherByName("$destination"));
+        }
+        else if (preg_match('/^\/src\/api\/api\.php\/averageWeather\/([-+]?\d+\.\d+)\/([-+]?\d+\.\d+)$/', $endpoint, $matches)) {
+            $latitude = $matches[1];
+            $longitude = $matches[2];
             echo json_encode($weather->getAverageWeather($latitude, $longitude, '2022-01-01', '2022-12-31'));
-        } else {
+        }
+        else {
             http_response_code(404);
             echo json_encode(['message' => 'Not Found']);
         }
@@ -54,7 +52,7 @@ switch ($method) {
 function getEndpoint() {
     $uri = $_SERVER['REQUEST_URI'];
     $path = parse_url($uri, PHP_URL_PATH);
-    $path = rtrim($path, '/');
+    // echo $path;
     return $path;
 }
 

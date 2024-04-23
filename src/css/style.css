@@ -34,6 +34,12 @@
     /* height: auto; */
 }
 
+p {
+    margin-bottom: 0; /* Remove bottom margin from paragraphs */
+}
+
+
+
 /* Responsive adjustment for smaller screens */
 @media (max-width: 768px) {
     .custom-container {
