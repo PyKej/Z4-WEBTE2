@@ -44,6 +44,44 @@ class WeatherAPI {
         }
     }
 
+    public function getCurlCurrWeatherByName($destination) {
+        // API key should be stored in a configuration file or environment variable for security
+        $apiKey = "5c976b1a4dd03882a6a9af9a0c9e1451";
+        $units = "metric"; // or 'imperial' for Fahrenheit
+
+        // Construct the URL
+        $url = "https://api.openweathermap.org/data/2.5/weather?q=" . $destination ."&units=$units&APPID=$apiKey";
+
+        // Initialize cURL session
+        $ch = curl_init();
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        // Execute the GET request
+        $response = curl_exec($ch);
+
+        // Close cURL session
+        curl_close($ch);
+
+        // Decode the JSON response to a PHP array
+        $weatherData = json_decode($response, true);
+
+        // Handle the case where cURL failed
+        if ($response === false) {
+            return "cURL Error: " . curl_error($ch);
+        }
+
+        // Check if the API returned a successful response
+        if (isset($weatherData['cod']) && $weatherData['cod'] == 200) {
+            return $weatherData;
+        } else {
+            // Handle API error response
+            return isset($weatherData['message']) ? $weatherData['message'] : 'Error retrieving weather data';
+        }
+    }
+
 
     public function getAverageWeather($latitude, $longitude, $startDate, $endDate) {
         // Construct the Archive API URL

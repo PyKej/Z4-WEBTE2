@@ -19,7 +19,7 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-      <h1>Zadanie444444</h1>
+      <h1>Zadanie4</h1>
         <button class="btn btn-primary" id="currWeather">Current weather</button>
         <button class="btn btn-primary" id="averageWeather">Average weather</button>
         
@@ -28,6 +28,20 @@
 
 
   </div>
+
+  
+  <div class="container custom-container mt-5">
+    
+    <h2>Enter Your Vacation Destination</h2>
+    <form class="row" id="vacationForm">
+        <div class="col-8 mb-3">
+            <label for="destinationInput" class="form-label">Destination:</label>
+            <input type="text" class="form-control" id="destinationInput" name="destination" placeholder="Enter destination">
+        </div>
+        <button type="submit" class="col-4 btn btn-primary">Submit</button>
+    </form>
+    </div>
+</div>
 
 
 
@@ -108,6 +122,116 @@
             });
         });
 
+    //      // Adding listener to the form
+    // document.getElementById('vacationForm').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Prevent the default form submission
+    //     fetch('/src/api/api.php/weather', {
+    //         method: 'GET',
+    //         headers: {'Accept': 'application/json'}
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         console.log("Weather Data:", data);
+    //         document.querySelector('.toast-body').textContent = 'Weather data loaded successfully';
+    //         document.querySelector('.toast').classList.add('show'); // Show toast
+    //     })
+    //     .catch(error => {
+    //         console.error('Error loading weather data:', error);
+    //         document.querySelector('.toast-body').textContent = 'Failed to load weather data';
+    //         document.querySelector('.toast').classList.add('show');
+    //     });
+    // });
+
+    // document.getElementById('vacationForm').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Prevent the default form submission
+        
+    //     // First, fetch current weather
+    //     fetch('/src/api/api.php/currWeather', {
+    //         method: 'GET',
+    //         headers: {'Accept': 'application/json'}
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         console.log("Current Weather Data:", data);
+    //         // Assuming latitude and longitude are part of the returned 'data'
+    //         // const latitude = data.latitude;
+    //         // const longitude = data.longitude;
+
+    //         const latitude = 49.153495;
+    //         const longitude = 20.425547;
+
+    //         // Now fetch average weather using the retrieved latitude and longitude
+    //         return fetch(`/src/api/api.php/averageWeather?latitude=${latitude}&longitude=${longitude}`, {
+    //             method: 'GET',
+    //             headers: {'Accept': 'application/json'}
+    //         });
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(averageWeatherData => {
+    //         console.log("Average Weather Data:", averageWeatherData);
+    //         document.querySelector('.toast-body').textContent = 'Weather data loaded successfully';
+    //         document.querySelector('.toast').classList.add('show'); // Show toast
+    //     })
+    //     .catch(error => {
+    //         console.error('Error loading weather data:', error);
+    //         document.querySelector('.toast-body').textContent = 'Failed to load weather data';
+    //         document.querySelector('.toast').classList.add('show');
+    //     });
+    // });
+
+
+    document.getElementById('vacationForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+      
+      const fetchWeatherData = (endpoint, params = '') => fetch(`/src/api/api.php/${endpoint}${params}`, {
+          method: 'GET',
+          headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+      });
+
+      fetchWeatherData('currWeather')
+      .then(data => {
+          console.log("Current Weather Data:", data);
+          const latitude = 49.153495; // Assuming these are meant to be dynamic or fetched from 'data'
+          const longitude = 20.425547;
+          return fetchWeatherData('averageWeather', `?latitude=${latitude}&longitude=${longitude}`);
+      })
+      .then(averageWeatherData => {
+          console.log("Average Weather Data:", averageWeatherData);
+          const toastBody = document.querySelector('.toast-body');
+          toastBody.textContent = 'Weather data loaded successfully';
+          toastBody.closest('.toast').classList.add('show'); // Show toast
+      })
+      .catch(error => {
+          console.error('Error loading weather data:', error);
+          const toastBody = document.querySelector('.toast-body');
+          toastBody.textContent = 'Failed to load weather data';
+          toastBody.closest('.toast').classList.add('show');
+      });
+  });
+
+
+
+
+    
         
 
 

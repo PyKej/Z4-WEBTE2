@@ -1,0 +1,43 @@
+.custom-container {
+    width: 600px; /* Fixed width or you can use percentage */
+    background-color: #e0ffff; /* Lighter shade of aqua for a softer look */
+    padding: 20px; /* Adds space inside the container */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: auto; /* Center the container horizontally */
+}
+
+/* Further style the form elements for a cohesive look */
+.custom-container h2 {
+    color: #333; /* Darker text for better readability */
+    margin-bottom: 15px; /* Space below the header */
+}
+
+.custom-container .form-label {
+    color: #555; /* Soften the label color */
+}
+
+.custom-container .form-control {
+    border-radius: 5px; /* Rounded edges on inputs */
+    border: 1px solid #ccc; /* Subtle border for inputs */
+}
+
+.custom-container .btn-primary {
+    display: block;
+    margin: auto;
+    background-color: #007bff; /* Bootstrap primary blue */
+    border-color: #007bff; /* Match border color */
+    border-radius: 5px; /* Rounded button edges */
+    padding: 10px 15px; /* Better button padding */
+    height: 52px;
+    
+    /* height: auto; */
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+    .custom-container {
+        width: 95%; /* Nearly full width on smaller screens */
+        margin-top: 20px; /* More top margin on small screens */
+    }
+}

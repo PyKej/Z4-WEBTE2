@@ -16,27 +16,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $uri = $_SERVER['REQUEST_URI'];
 // $endpoint = substr($uri, strpos($uri, '/api.php/') + strlen('/api.php'));
-$endpoint = getEndpoint($_SERVER['QUERY_STRING']);
+
+
+
+// $endpoint = getEndpoint($_SERVER['QUERY_STRING']);
+$endpoint = getEndpoint();
+
+
 // var_dump($endpoint);
 switch ($method) {
     case 'GET':
-        if ($endpoint == '/currWeather'){
+        if ($endpoint == '/weather') {
+            $myData;
+
             http_response_code(200);
-            echo json_encode($weather->getCurlCurrWeather(49.153495, 20.425547));
+            echo json_encode($weather->getCurlCurrWeatherByName("Poprad"));
+            // echo json_encode($weather->getAverageWeather(49.153495, 20.425547, '2022-01-01', '2022-12-31'));
 
-            // $currWeather = $weatherAPI->getCurrWeather("Bratislava");
-            // print_r($currWeather);
-
-        }
-        else if($endpoint == '/averageWeather'){
+        } else if ($endpoint == '/src/api/api.php/currWeather'){
             http_response_code(200);
-            echo json_encode($weather->getAverageWeather(49.153495, 20.425547, '2022-01-01', '2022-12-31'));
-
-        }
-        else {
+            echo json_encode($weather->getCurlCurrWeatherByName("Poprad"));
+        }  else if ($endpoint == '/src/api/api.php/averageWeather'){
+            $latitude = $_GET['latitude'] ?? '49.153495'; // Default values if parameters are not provided
+            $longitude = $_GET['longitude'] ?? '20.425547';
+            echo json_encode($weather->getAverageWeather($latitude, $longitude, '2022-01-01', '2022-12-31'));
+        } else {
             http_response_code(404);
             echo json_encode(['message' => 'Not Found']);
-            
         }
         break;
     default:
@@ -45,9 +51,13 @@ switch ($method) {
         break;
 }
 
-function getEndpoint($link) {
-
-    return "/" . rtrim(explode("/", $link, 5)[4], '/');
+function getEndpoint() {
+    $uri = $_SERVER['REQUEST_URI'];
+    $path = parse_url($uri, PHP_URL_PATH);
+    $path = rtrim($path, '/');
+    return $path;
 }
+
+
 
 ?>
