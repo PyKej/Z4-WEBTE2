@@ -1,47 +1,55 @@
 version: '3.8'
 
 services:
+  # Nginx webserver service
   nginx:
     image: nginx:1.18
     ports:
-      - "8080:80"
+      - 80:80
     volumes:
-      - ./src:/var/www/node91.webte.fei.stuba.sk
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2:/var/www/node91.webte.fei.stuba.sk
+      - C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2\\.docker\\nginx\\conf.d:/etc/nginx/conf.d
     depends_on:
       - php
 
+  # PHP-FPM service
   php:
-    build: .
-    working_dir: /var/www/node91.webte.fei.stuba.sk
+    build: C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2\\.docker\\php
+    working_dir: /var/www/www/node91.webte.fei.stuba.sk
     volumes:
-      - ./src:/var/www/node91.webte.fei.stuba.sk
-    command: php-fpm
+      - C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2:/var/www/node91.webte.fei.stuba.sk
+    depends_on:
+      mysql:
+        condition: service_healthy
 
-  db:
-    image: mysql:8.0
-    container_name: mysql-db
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./mysql/init:/docker-entrypoint-initdb.d
+  #MySQL service
+  mysql:
+    image: mysql/mysql-server:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: mojeHeslo.123
-      MYSQL_DATABASE: z4_webte2
+      MYSQL_ROOT_PASSWORD: super-silne-heslo
+      # MYSQL_ROOT_HOST: "%"
       MYSQL_USER: xpitkakester
       MYSQL_PASSWORD: mojeHeslo.123
-    ports:
-      - "3306:3306"
-
+      MYSQL_DATABASE: z4-webte2
+    volumes:
+      - C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2\\.docker\\mysql\\my.cnf:/etc/mysql/mysql.cnf
+      - C:\\Users\\PyKej\\Documents\\SCHOOL-6\\WEBTE2\\Z4-WEBTE2\\.database:/docker-entrypoint-initdb.d
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      retries: 10
+  
+  # phpMyAdmin interface
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:5
     ports:
-      - "8081:80"
+      - 8080:80
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: mojeHeslo.123
+      PMA_HOST: mysql
     depends_on:
-      - db
-
+      mysql:
+        condition: service_healthy
+# Volumes
 volumes:
-  db_data:
+  mysqldata:

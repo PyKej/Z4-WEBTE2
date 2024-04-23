@@ -15,8 +15,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 // $endpoint = $_SERVER['REQUEST_URI'];
 
 $uri = $_SERVER['REQUEST_URI'];
-$endpoint = substr($uri, strpos($uri, '/api.php/') + strlen('/api.php'));
-
+// $endpoint = substr($uri, strpos($uri, '/api.php/') + strlen('/api.php'));
+$endpoint = getEndpoint($_SERVER['QUERY_STRING']);
+// var_dump($endpoint);
 switch ($method) {
     case 'GET':
         if ($endpoint == '/currWeather'){
@@ -42,6 +43,11 @@ switch ($method) {
         http_response_code(405);
         echo json_encode(['message' => 'Method Not Allowed']);
         break;
+}
+
+function getEndpoint($link) {
+
+    return "/" . rtrim(explode("/", $link, 5)[4], '/');
 }
 
 ?>

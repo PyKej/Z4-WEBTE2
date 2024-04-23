@@ -19,7 +19,7 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-      <h1>Rozvrh</h1>
+      <h1>Zadanie444444</h1>
         <button class="btn btn-primary" id="currWeather">Current weather</button>
         <button class="btn btn-primary" id="averageWeather">Average weather</button>
         
@@ -61,7 +61,7 @@
         let loadedData = []; // Global variable to store loaded data
 
         document.getElementById('currWeather').addEventListener('click', function() {
-            fetch('/api/api.php/currWeather', {
+            fetch('/src/api/api.php/currWeather', {
                 method: 'GET',
                 headers: {'Accept': 'application/json'}
             })
@@ -85,7 +85,7 @@
         });
 
         document.getElementById('averageWeather').addEventListener('click', function() {
-            fetch('/api/api.php/averageWeather', {
+            fetch('/src/api/api.php/averageWeather', {
                 method: 'GET',
                 headers: {'Accept': 'application/json'}
             })
