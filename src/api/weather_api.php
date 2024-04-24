@@ -144,7 +144,32 @@ class WeatherAPI {
             return isset($weatherData['message']) ? $weatherData['message'] : 'Error retrieving average weather data';
         }
     }
+
+
+    public function getCountryInfo($countryCode) {
+        $url = "https://restcountries.com/v3.1/alpha/" . $countryCode;
     
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    
+        if ($response === false) {
+            return "cURL Error: " . curl_error($ch);
+        }
+    
+        $data = json_decode($response, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return 'Error decoding JSON';
+        }
+    
+        return $data;
+    }
+    
+   
+
+ 
 
 
 

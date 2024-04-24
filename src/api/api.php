@@ -1,14 +1,10 @@
 <?php
 require_once('../db/connect.php'); // Database configuration
-require_once('timetable_api.php'); // The logic for handling timetable data
-require_once('endAssigment_api.php'); // The logic for handling end assigment data
 require_once('weather_api.php'); // The logic for handling weather data
 
 header("Content-Type: application/json");
 
 $conn = getDBConnection();
-$timetable = new TimetableAPI($conn);
-$endAssigment = new EndAssigmentAPI($conn);
 $weather = new WeatherAPI($conn);
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -37,6 +33,11 @@ switch ($method) {
             $latitude = $matches[1];
             $longitude = $matches[2];
             echo json_encode($weather->getAverageWeather($latitude, $longitude, '2022-01-01', '2022-12-31'));
+        }
+        elseif (preg_match('/^\/src\/api\/api\.php\/countryInfo\/(\w+)$/', $endpoint, $matches)) {
+            $countryCode = $matches[1];
+            $result = $weather->getCountryInfo($countryCode);
+            echo json_encode($result);
         }
         else {
             http_response_code(404);

@@ -16,18 +16,6 @@
 
   <!-- Main content -->
 
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-      <h1>Zadanie4</h1>
-        <button class="btn btn-primary" id="currWeather">Current weather</button>
-        <button class="btn btn-primary" id="averageWeather">Average weather</button>
-        
-      </div>
-    </div>
-
-
-  </div>
 
   
   <div class="container custom-container mt-5">
@@ -38,13 +26,17 @@
             <label for="destinationInput" class="form-label">Destination:</label>
             <input type="text" class="form-control" id="destinationInput" name="destination" placeholder="Enter destination">
         </div>
-        <button type="submit" class="col-4 btn btn-primary">Submit</button>
+        <!-- <div class="col-1"></div> -->
+        <button type="submit" class="col-3 btn btn-primary">Submit</button>
     </form>
     
     </div>
 
-    <div id="weatherContainer" class="container custom-container mt-5" style="display: none;">
-    <div id="weatherResult"></div> <!-- Element to display weather data -->
+    <div id="weatherContainer" class="container info-container-main" style="display: none;">
+      <div id="actualWeatherResult" class="info-container"></div> <!-- Element to display weather data -->
+      <div id="averageWeatherResult" class="info-container"></div> <!-- Element to display weather data -->
+      <div id="countryInfo" class="info-container"></div> <!-- Element to display country data -->
+      <div id="currencyInfo" class="info-container" style="display: none;"></div> <!-- Added this line for currency info -->
     </div>
 
 
@@ -92,90 +84,7 @@
 <script>
         let loadedData = []; // Global variable to store loaded data
 
-        // document.getElementById('currWeather').addEventListener('click', function() {
-        //     fetch('/src/api/api.php/currWeather', {
-        //         method: 'GET',
-        //         headers: {'Accept': 'application/json'}
-        //     })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok');
-        //         }
-        //         return response.json(); // Assuming your server responds with JSON
-        //     })
-        //     .then(data => {
-        //         console.log("Data curled:", data);
-        //         loadedData = data.main.temp;
-
-        //         console.log(loadedData);
-        //         document.querySelector('.toast-body').textContent = data.message; // Set message text
-        //         document.querySelector('.toast').classList.add('show'); // Show toast
-        //     })
-        //     .catch(error => {
-        //         console.error('Error loading data:', error);
-        //     });
-        // });
-
-        // document.getElementById('averageWeather').addEventListener('click', function() {
-        //     fetch('/src/api/api.php/averageWeather', {
-        //         method: 'GET',
-        //         headers: {'Accept': 'application/json'}
-        //     })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok');
-        //         }
-        //         return response.json(); // Assuming your server responds with JSON
-        //     })
-        //     .then(data => {
-        //         console.log("Data curled:", data);
-        //         // loadedData = data.main.temp;
-
-        //         // console.log(loadedData);
-        //         document.querySelector('.toast-body').textContent = data.message; // Set message text
-        //         document.querySelector('.toast').classList.add('show'); // Show toast
-        //     })
-        //     .catch(error => {
-        //         console.error('Error loading data:', error);
-        //     });
-        // });
-
-  
-
-// document.getElementById('vacationForm').addEventListener('submit', function(event) {
-//     event.preventDefault(); // Prevent default form submission
-
-//     const destination = document.getElementById('destinationInput').value; // Get the destination from the form
-//     const fetchWeatherData = (endpoint, params = '') => fetch(`/src/api/api.php/${endpoint}/${params}`, {
-//         method: 'GET',
-//         headers: {'Accept': 'application/json'}
-//     })
-//     .then(response => {
-//         if (!response.ok) throw new Error('Network response was not ok');
-//         return response.json();
-//     });
-
-//     fetchWeatherData('currWeather', encodeURIComponent(destination))
-//     .then(data => {
-//         console.log("Current Weather Data:", data);
-//         // console.log("Current Weather Data-small:", data.coord.lat);
-        
-//         return fetchWeatherData('averageWeather', `${data.coord.lat}/${data.coord.lon}`);
-//     })
-//     .then(averageWeatherData => {
-//         console.log("Average Weather Data:", averageWeatherData);
-//         const toastBody = document.querySelector('.toast-body');
-//         toastBody.textContent = 'Weather data loaded successfully';
-//         toastBody.closest('.toast').classList.add('show'); // Show toast
-//     })
-//     .catch(error => {
-//         console.error('Error loading weather data:', error);
-//         const toastBody = document.querySelector('.toast-body');
-//         toastBody.textContent = 'Failed to load weather data';
-//         toastBody.closest('.toast').classList.add('show');
-//     });
-// });
-
+        let countryCode;
 
 document.getElementById('vacationForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
@@ -196,10 +105,12 @@ document.getElementById('vacationForm').addEventListener('submit', function(even
             fetchWeatherData('currWeather', encodeURIComponent(destination))
             .then(data => {
                 console.log("Current Weather Data:", data);
-                const weatherResultDiv = document.getElementById('weatherResult');
+                const actualWeatherResult = document.getElementById('actualWeatherResult');
                 // weatherResult.textContent = JSON.stringify(data, null, 2); // Display the weather data
+                countryCode = data.sys.country;
+
                 weatherContainer.style.display = 'block'; // Show the container
-                weatherResultDiv.innerHTML = `
+                actualWeatherResult.innerHTML = `
                 <h3>Actual weather in ${data.name} (${data.sys.country? (data.sys.country) : '' }) <img  src="https://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="${data.weather [0].description}"  ></h3>
 
                 <div class="row">
@@ -230,8 +141,8 @@ document.getElementById('vacationForm').addEventListener('submit', function(even
             })
             .then(averageWeatherData => {
                 console.log("Average Weather Data:", averageWeatherData);
-                const weatherResultDiv = document.getElementById('weatherResult');
-                weatherResultDiv.innerHTML += `
+                const averageWeatherResult = document.getElementById('averageWeatherResult');
+                averageWeatherResult.innerHTML = `
                 <h3>Average temperatures for year 2023</h3>
                 <div class="row">
                 <div class="col">
@@ -255,21 +166,89 @@ document.getElementById('vacationForm').addEventListener('submit', function(even
                 
                 `;
                 
+               
+                return fetchWeatherData('countryInfo', countryCode);
+            })
+            .then(countryData => {
+              const currencyCode = Object.keys(countryData[0].currencies)[0]; // Assuming currency data is fetched here
+              const countryInfoDiv = document.getElementById('countryInfo');
+                countryInfoDiv.innerHTML = `<h3>Country Information</h3>
+                    <div class="row">
+                    <div class="col">
+                    <p><img src="${countryData[0].flags.png}" alt="${countryData[0].name.common} flag" style="width: 100px; height: auto;"></p>
+                    <p>Name: ${countryData[0].name.common}</p>
+                    <p>Capital: ${countryData[0].capital[0]}</p>
+                    
+                    <p>Population: ${countryData[0].population}</p>
+                    <p>Region: ${countryData[0].region}</p>
+                    </div>
+                    <div class="col">
+                    <p>Area: ${countryData[0].area} km²</p>
+                    <p>Timezones: ${countryData[0].timezones}</p>
+                    <p>Country Currency: ${currencyCode}</p>
+                    <p>Language: ${Object.values(countryData[0].languages).join(', ')}</p>
+                    
+                    <p>Wikipedia: <a href="https://en.wikipedia.org/wiki/${countryData[0].name.common}" target="_blank">Link</a></p>
+                    <p>Bordering Countries: ${countryData[0].borders.join(', ')}</p>
+                    </div>
+                    </div>
+                    `;
+                weatherContainer.style.display = 'block'; // Show the container
+
+
+
+                if (currencyCode !== 'EUR') {
+                    return fetchCurrencyRate(currencyCode, 'EUR').then(currencyRate => {
+                        displayCurrencyInfo(`1 ${currencyCode} = ${currencyRate.conversion_rate} EUR`, currencyInfo);
+                    });
+                } else {
+                    displayCurrencyInfo('1 EUR = 1 EUR', currencyInfo);
+                    const currencyInfoDivShow = document.getElementById('currencyInfo');
+                    currencyInfoDivShow.style.display = 'none';
+
+                }
+   
+
+                console.log("Country Data:", countryData);
+
                 const toastBody = document.querySelector('.toast-body');
                 toastBody.textContent = 'Weather data loaded successfully';
                 toastBody.closest('.toast').classList.add('show'); // Show toast
             })
             .catch(error => {
-                console.error('Error loading weather data:', error);
-                const toastBody = document.querySelector('.toast-body');
-                toastBody.textContent = 'Failed to load weather data';
-                toastBody.closest('.toast').classList.add('show');
+                console.error('Error:', error);
+                displayError('Failed to load data');
             });
+
         });
 
+        function fetchCurrencyRate(fromCurrency, toCurrency) {
+    return fetch(`https://v6.exchangerate-api.com/v6/3efd5620afac285455617cb4/pair/${fromCurrency}/${toCurrency}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.conversion_rate) {
+                return data;
+            } else {
+                throw new Error('Failed to retrieve currency data');
+            }
+        });
+}
 
-    
-        
+function displayCurrencyInfo(message, element) {
+    if (element) {
+        element.innerHTML = `
+        <h3>Currency Information</h3>
+        <p>${message}</p>`;
+    }
+    const currencyInfoDivShow = document.getElementById('currencyInfo');
+    currencyInfoDivShow.style.display = 'block';
+}
+
+function displayError(message) {
+    const toastBody = document.querySelector('.toast-body');
+    toastBody.textContent = message;
+    toastBody.closest('.toast').classList.add('show');
+}   
 
 
 </script>
