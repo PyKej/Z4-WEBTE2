@@ -170,7 +170,25 @@ class WeatherAPI {
    
 
  
-
+    public function recordSearch($destination, $country) {
+        // Check if the destination already exists
+        $stmt = $this->db->prepare('SELECT id, search_count FROM searches WHERE destination = :destination AND country = :country');
+        $stmt->execute(['destination' => $destination, 'country' => $country]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result) {
+            // Record exists, update it
+            $newCount = $result['search_count'] + 1;
+            $updateStmt = $this->db->prepare('UPDATE searches SET search_count = :search_count WHERE id = :id');
+            $updateStmt->execute(['search_count' => $newCount, 'id' => $result['id']]);
+            return ['status' => 'success', 'message' => 'Search count updated'];
+        } else {
+            // No record exists, insert new
+            $insertStmt = $this->db->prepare('INSERT INTO searches (destination, country, search_count) VALUES (:destination, :country, 1)');
+            $insertStmt->execute(['destination' => $destination, 'country' => $country]);
+            return ['status' => 'success', 'message' => 'New search recorded'];
+        }
+    }
 
 
 

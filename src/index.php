@@ -89,6 +89,9 @@
 document.getElementById('vacationForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
             const destination = document.getElementById('destinationInput').value; // Get the destination from the form
+
+
+
             const fetchWeatherData = (endpoint, params = '') => fetch(`/src/api/api.php/${endpoint}/${params}`, {
                 method: 'GET',
                 headers: {'Accept': 'application/json'}
@@ -103,6 +106,26 @@ document.getElementById('vacationForm').addEventListener('submit', function(even
 
 
             fetchWeatherData('currWeather', encodeURIComponent(destination))
+            .then(data => {
+                  console.log("Current Weather Data:", data);
+                  const actualWeatherResult = document.getElementById('actualWeatherResult');
+                  countryCode = data.sys.country; // assuming data.sys.country contains the country code
+
+                  // Record the search immediately after getting the weather data
+                  return fetch(`/src/api/api.php/recordSearch/${encodeURIComponent(destination)}/${encodeURIComponent(countryCode)}`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Accept': 'application/json'
+                      },
+                      body: JSON.stringify({ country: countryCode }) // Assuming your backend expects JSON
+                  })
+                  .then(response => response.json())
+                  .then(recordResponse => {
+                      console.log('Record Search Response:', recordResponse);
+                      return data; // continue with the original data
+                  });
+              })
             .then(data => {
                 console.log("Current Weather Data:", data);
                 const actualWeatherResult = document.getElementById('actualWeatherResult');
